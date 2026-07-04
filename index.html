@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YT Bookmarks — Never lose the moment again</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet"/>
+<style>
+
+/* ════════════════════════════════════════════════════════
+   TOKENS
+   ════════════════════════════════════════════════════════ */
+:root{
+  --ink:        #0B0B0C;   /* theater black */
+  --ink-2:      #151517;
+  --ink-3:      #1F1F22;
+  --rule:       #2A2A2D;
+  --paper:      #F7F5F0;   /* warm scrub-card paper */
+  --paper-dim:  #EAE7DE;
+  --red:        #FF0000;
+  --red-dk:     #CC0000;
+  --red-glow:   rgba(255,0,0,.22);
+  --white:      #FAF9F7;
+  --grey-1:     #C9C9CC;
+  --grey-2:     #8A8A8E;
+  --grey-3:     #58585C;
+  --green:      #2FBF71;
+  --display:    'Inter', -apple-system, sans-serif;
+  --serif:      'Source Serif 4', Georgia, serif;
+  --body:       'Inter', -apple-system, sans-serif;
+  --mono:       'JetBrains Mono', monospace;
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ scroll-behavior:smooth; }
+body{
+  background:var(--ink);
+  color:var(--white);
+  font-family:var(--body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg{ display:block; max-width:100%; }
+a{ color:inherit; text-decoration:none; }
+section{ position:relative; }
+.wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; }
+}
+
+:focus-visible{ outline:2px solid var(--red); outline-offset:3px; border-radius:2px; }
+
+/* ════════════════════════════════════════════════════════
+   NAV
+   ════════════════════════════════════════════════════════ */
+.nav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 32px;
+  background:rgba(11,11,12,.7);
+  backdrop-filter:blur(14px) saturate(140%);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.nav-brand{ display:flex; align-items:center; gap:9px; font-weight:800; font-size:15px; letter-spacing:-.01em; }
+.nav-mark{ width:22px; height:22px; flex-shrink:0; }
+.nav-links{ display:flex; align-items:center; gap:28px; font-size:13.5px; color:var(--grey-1); }
+.nav-links a{ transition:color .15s; }
+.nav-links a:hover{ color:var(--white); }
+.nav-cta{
+  background:var(--white); color:var(--ink);
+  font-weight:700; font-size:13px; padding:9px 18px; border-radius:7px;
+  transition:transform .15s, background .15s;
+}
+.nav-cta:hover{ background:var(--red); color:var(--white); transform:translateY(-1px); }
+.nav-mobile-hide{ display:flex; }
+@media(max-width:760px){ .nav-mobile-hide{ display:none; } }
+
+/* ════════════════════════════════════════════════════════
+   HERO
+   ════════════════════════════════════════════════════════ */
+.hero{
+  padding:152px 0 96px;
+  position:relative;
+}
+.hero::before{
+  content:'';
+  position:absolute; inset:0; height:640px;
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgba(255,0,0,.10), transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{ position:relative; z-index:2; text-align:center; }
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--mono); font-size:11.5px; font-weight:500;
+  letter-spacing:.04em; color:var(--grey-1);
+  background:var(--ink-3); border:1px solid var(--rule);
+  padding:6px 13px; border-radius:20px;
+  margin-bottom:28px;
+}
+.eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--red); flex-shrink:0;
+  box-shadow:0 0 0 3px var(--red-glow); }
+
+.hero h1{
+  font-family:var(--display);
+  font-size:clamp(40px, 6.4vw, 84px);
+  font-weight:800;
+  letter-spacing:-.035em;
+  line-height:1.0;
+  max-width:920px;
+  margin:0 auto;
+}
+.hero h1 em{
+  font-style:normal; color:var(--red);
+}
+.hero-sub{
+  margin:26px auto 0;
+  max-width:560px;
+  font-size:17px;
+  line-height:1.6;
+  color:var(--grey-1);
+}
+.hero-actions{
+  display:flex; align-items:center; justify-content:center; gap:14px;
+  margin-top:38px; flex-wrap:wrap;
+}
+.btn-primary{
+  display:inline-flex; align-items:center; gap:9px;
+  background:var(--red); color:var(--white);
+  font-weight:700; font-size:14.5px;
+  padding:13px 24px; border-radius:8px;
+  box-shadow:0 8px 24px var(--red-glow);
+  transition:transform .15s, box-shadow .15s, background .15s;
+}
+.btn-primary:hover{ background:var(--red-dk); transform:translateY(-2px); box-shadow:0 12px 30px var(--red-glow); }
+.btn-secondary{
+  display:inline-flex; align-items:center; gap:8px;
+  background:transparent; color:var(--white);
+  font-weight:600; font-size:14.5px;
+  padding:13px 22px; border-radius:8px;
+  border:1px solid var(--rule);
+  transition:border-color .15s, background .15s;
+}
+.btn-secondary:hover{ border-color:var(--grey-2); background:var(--ink-2); }
+.hero-meta{
+  margin-top:20px; font-size:12.5px; color:var(--grey-3);
+  display:flex; align-items:center; justify-content:center; gap:18px; flex-wrap:wrap;
+}
+.hero-meta span{ display:inline-flex; align-items:center; gap:6px; }
+
+/* ════════════════════════════════════════════════════════
+   SIGNATURE: THE SCRUBBER
+   The product's core idea — pins dropped on a timeline — made
+   into the page's one unmistakable visual.
+   ════════════════════════════════════════════════════════ */
+.scrubber-stage{
+  margin-top:80px;
+  padding:0;
+}
+.scrubber-frame{
+  max-width:920px; margin:0 auto;
+  background:var(--ink-2);
+  border:1px solid var(--rule);
+  border-radius:14px;
+  padding:28px 28px 24px;
+  box-shadow:0 40px 100px rgba(0,0,0,.5);
+}
+.scrubber-frame-head{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:22px;
+}
+.scrubber-title{ font-size:13.5px; font-weight:600; color:var(--grey-1); }
+.scrubber-title b{ color:var(--white); }
+.scrubber-time{ font-family:var(--mono); font-size:12px; color:var(--grey-2); }
+
+.scrubber-track{
+  position:relative; height:6px; border-radius:4px;
+  background:var(--rule);
+  margin:0 4px;
+}
+.scrubber-fill{
+  position:absolute; left:0; top:0; bottom:0;
+  width:38%; background:var(--red); border-radius:4px;
+}
+.scrubber-playhead{
+  position:absolute; top:50%; left:38%;
+  width:13px; height:13px; border-radius:50%;
+  background:var(--white);
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 0 4px rgba(255,255,255,.12);
+}
+
+.pin{
+  position:absolute; top:50%; left:0;
+  transform:translate(-50%,-50%);
+  width:18px; height:18px;
+  cursor:pointer;
+}
+.pin-dot{
+  width:18px; height:18px; border-radius:50%;
+  background:var(--ink-2); border:2.5px solid var(--red);
+  transition:transform .18s, background .18s;
+}
+.pin:hover .pin-dot{ background:var(--red); transform:scale(1.15); }
+
+.pin-card{
+  position:absolute; bottom:30px; left:50%;
+  transform:translateX(-50%) translateY(6px);
+  width:222px;
+  background:var(--paper); color:var(--ink);
+  border-radius:10px; padding:13px 14px;
+  opacity:0; pointer-events:none;
+  transition:opacity .18s, transform .18s;
+  box-shadow:0 16px 40px rgba(0,0,0,.45);
+  text-align:left; z-index:5;
+}
+.pin:hover .pin-card, .pin:focus-within .pin-card{
+  opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto;
+}
+.pin-card::after{
+  content:''; position:absolute; top:100%; left:50%;
+  transform:translateX(-50%);
+  border:7px solid transparent; border-top-color:var(--paper);
+}
+.pin-ts{ font-family:var(--mono); font-size:11px; font-weight:600; color:var(--red-dk); }
+.pin-note{ font-size:12.5px; font-weight:600; line-height:1.4; margin-top:4px; }
+.pin-tag{
+  display:inline-block; margin-top:7px;
+  font-size:10px; font-weight:600; letter-spacing:.02em;
+  background:#FFF0F0; color:var(--red-dk);
+  padding:2px 8px; border-radius:10px;
+}
+
+.scrubber-caption{
+  margin-top:20px; text-align:center;
+  font-size:12.5px; color:var(--grey-3);
+}
+@media(max-width:640px){
+  .scrubber-frame{ padding:22px 16px 20px; }
+  .pin-card{ width:170px; font-size:12px; }
+}
+
+/* ════════════════════════════════════════════════════════
+   LOGO / TRUST STRIP
+   ════════════════════════════════════════════════════════ */
+.trust{
+  padding:50px 0; border-top:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.06);
+}
+.trust-row{
+  display:flex; align-items:center; justify-content:center; gap:48px;
+  flex-wrap:wrap; color:var(--grey-3); font-size:13px;
+}
+.trust-row b{ color:var(--grey-1); font-weight:700; }
+
+/* ════════════════════════════════════════════════════════
+   SECTION HEADERS — "chapters" device
+   The product's scrubber has chapter markers; we reuse that
+   idea as the section numbering system (timestamp-style).
+   ════════════════════════════════════════════════════════ */
+.chapter-label{
+  display:flex; align-items:baseline; gap:12px;
+  margin-bottom:18px;
+}
+.chapter-ts{
+  font-family:var(--mono); font-size:13px; font-weight:600; color:var(--red);
+}
+.chapter-name{
+  font-size:12.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--grey-2);
+}
+.section-head{ max-width:640px; margin-bottom:56px; }
+.section-head h2{
+  font-size:clamp(28px,3.6vw,42px); font-weight:800; letter-spacing:-.025em; line-height:1.12;
+}
+.section-head p{ margin-top:14px; font-size:15.5px; line-height:1.65; color:var(--grey-1); }
+
+/* ════════════════════════════════════════════════════════
+   FEATURES — bookmark-card grid (mirrors the real product UI)
+   ════════════════════════════════════════════════════════ */
+.features{ padding:120px 0; }
+.feat-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
+}
+@media(max-width:880px){ .feat-grid{ grid-template-columns:repeat(2,1fr); } }
+@media(max-width:600px){ .feat-grid{ grid-template-columns:1fr; } }
+
+.feat-card{
+  background:var(--ink-2); border:1px solid var(--rule); border-radius:12px;
+  padding:24px; transition:border-color .2s, transform .2s;
+}
+.feat-card:hover{ border-color:#FF4D4D55; transform:translateY(-3px); }
+.feat-icon{
+  width:38px; height:38px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--red); margin-bottom:18px;
+  font-size:17px;
+}
+.feat-card h3{ font-size:16px; font-weight:700; letter-spacing:-.01em; }
+.feat-card p{ margin-top:8px; font-size:13.5px; line-height:1.6; color:var(--grey-2); }
+.feat-card.wide{ grid-column:span 2; }
+@media(max-width:880px){ .feat-card.wide{ grid-column:span 2; } }
+@media(max-width:600px){ .feat-card.wide{ grid-column:span 1; } }
+
+/* ════════════════════════════════════════════════════════
+   PRODUCT PREVIEW — actual popup chrome, faithfully styled
+   ════════════════════════════════════════════════════════ */
+.preview{ padding:0 0 130px; }
+.preview-grid{
+  display:grid; grid-template-columns:1.1fr 1fr; gap:64px; align-items:center;
+}
+@media(max-width:880px){ .preview-grid{ grid-template-columns:1fr; gap:48px; } }
+
+.preview-copy h2{ font-size:clamp(26px,3.2vw,36px); font-weight:800; letter-spacing:-.02em; line-height:1.15; }
+.preview-copy p{ margin-top:16px; font-size:15px; line-height:1.7; color:var(--grey-1); max-width:420px; }
+
+.taglist{ margin-top:26px; display:flex; flex-direction:column; gap:14px; }
+.tagrow{ display:flex; align-items:flex-start; gap:11px; font-size:13.5px; color:var(--grey-1); }
+.tagrow .tick{ color:var(--red); flex-shrink:0; margin-top:1px; font-weight:700; }
+
+/* faux popup */
+.popup-mock{
+  background:var(--white); border-radius:14px; overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  border:1px solid rgba(0,0,0,.06);
+  color:#111827;
+  max-width:380px; margin:0 auto;
+  font-family:var(--body);
+}
+.pm-header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 14px; border-bottom:1px solid #E5E7EB;
+}
+.pm-logo{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:13px; }
+.pm-badge{ font-size:10.5px; font-weight:600; background:#F3F4F6; border:1px solid #E5E7EB; color:#4B5563; padding:3px 9px; border-radius:20px; }
+.pm-search{ padding:9px 14px; background:#F3F4F6; border-bottom:1px solid #E5E7EB; font-size:12px; color:#9CA3AF; display:flex; align-items:center; gap:7px;}
+.pm-tabs{ display:flex; gap:14px; padding:0 14px; border-bottom:1px solid #E5E7EB; }
+.pm-tab{ font-size:11px; font-weight:600; padding:9px 0; color:#9CA3AF; }
+.pm-tab.active{ color:#FF0000; border-bottom:2px solid #FF0000; }
+.pm-card{ display:flex; gap:0; margin:10px; border:1px solid #E5E7EB; border-radius:8px; overflow:hidden; }
+.pm-thumb{ width:96px; height:54px; background:linear-gradient(135deg,#f0f0f0,#e2e2e2); flex-shrink:0; position:relative; }
+.pm-thumb span{ position:absolute; bottom:3px; right:4px; background:rgba(0,0,0,.75); color:#fff; font-family:var(--mono); font-size:9px; padding:1px 4px; border-radius:3px; }
+.pm-card-body{ padding:8px 10px; min-width:0; }
+.pm-card-title{ font-size:11.5px; font-weight:600; line-height:1.3; }
+.pm-card-meta{ font-size:10px; color:#9CA3AF; margin-top:3px; }
+.pm-chip{ display:inline-block; margin-top:5px; font-size:9px; font-weight:600; background:#FFF0F0; color:#CC0000; padding:1px 6px; border-radius:8px; }
+
+/* ════════════════════════════════════════════════════════
+   HOW IT WORKS — numbered, justified (a real sequence)
+   ════════════════════════════════════════════════════════ */
+.steps{ padding:0 0 130px; }
+.steps-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+@media(max-width:880px){ .steps-grid{ grid-template-columns:1fr; gap:36px; } }
+.step{ position:relative; padding-left:0; }
+.step-num{
+  font-family:var(--mono); font-size:13px; color:var(--red); font-weight:600;
+  margin-bottom:14px; display:block;
+}
+.step h3{ font-size:18px; font-weight:700; letter-spacing:-.01em; }
+.step p{ margin-top:9px; font-size:13.5px; line-height:1.65; color:var(--grey-2); }
+.step-line{
+  position:absolute; top:8px; left:36px; right:-32px; height:1px;
+  background:linear-gradient(90deg, var(--rule), transparent);
+}
+@media(max-width:880px){ .step-line{ display:none; } }
+
+/* ════════════════════════════════════════════════════════
+   TESTIMONIAL STRIP
+   ════════════════════════════════════════════════════════ */
+.quote-section{ padding:0 0 130px; }
+.quote-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+@media(max-width:880px){ .quote-grid{ grid-template-columns:1fr; } }
+.quote-card{
+  background:var(--ink-2); border:1px solid var(--rule); border-radius:12px;
+  padding:24px;
+}
+.quote-mark{ color:var(--red); font-family:var(--serif); font-size:34px; line-height:.5; display:block; margin-bottom:10px; }
+.quote-card p{ font-size:14px; line-height:1.65; color:var(--grey-1); }
+.quote-who{ margin-top:16px; display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--grey-3); }
+.quote-avatar{ width:26px; height:26px; border-radius:50%; background:var(--rule); flex-shrink:0; }
+
+/* ════════════════════════════════════════════════════════
+   FAQ
+   ════════════════════════════════════════════════════════ */
+.faq{ padding:0 0 130px; }
+.faq-list{ max-width:760px; }
+.faq-item{ border-bottom:1px solid var(--rule); }
+.faq-q{
+  width:100%; text-align:left; background:none; border:none; color:var(--white);
+  font-family:var(--body); font-size:15.5px; font-weight:600;
+  padding:20px 0; display:flex; align-items:center; justify-content:space-between; gap:16px;
+  cursor:pointer;
+}
+.faq-q .plus{ font-size:18px; color:var(--grey-2); transition:transform .2s; flex-shrink:0; }
+.faq-item.open .faq-q .plus{ transform:rotate(45deg); color:var(--red); }
+.faq-a{
+  max-height:0; overflow:hidden; transition:max-height .25s ease;
+}
+.faq-a p{ padding:0 0 20px; font-size:14px; line-height:1.7; color:var(--grey-2); max-width:640px; }
+
+/* ════════════════════════════════════════════════════════
+   FINAL CTA
+   ════════════════════════════════════════════════════════ */
+.cta{ padding:0 0 110px; }
+.cta-frame{
+  background:linear-gradient(160deg, var(--ink-3), var(--ink-2));
+  border:1px solid var(--rule); border-radius:18px;
+  padding:72px 40px; text-align:center;
+  position:relative; overflow:hidden;
+}
+.cta-frame::before{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(50% 60% at 50% 0%, rgba(255,0,0,.16), transparent 70%);
+}
+.cta-frame h2{ position:relative; font-size:clamp(28px,4vw,44px); font-weight:800; letter-spacing:-.025em; }
+.cta-frame p{ position:relative; margin-top:14px; color:var(--grey-1); font-size:15.5px; }
+.cta-frame .hero-actions{ position:relative; margin-top:30px; }
+
+/* ════════════════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════════════════ */
+footer{
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:36px 0;
+}
+.foot-row{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px; }
+.foot-brand{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:13.5px; color:var(--grey-1); }
+.foot-links{ display:flex; gap:22px; font-size:13px; color:var(--grey-3); }
+.foot-links a:hover{ color:var(--white); }
+.foot-meta{ font-size:12px; color:var(--grey-3); }
+
+</style>
+</head>
+<body>
+
+<!-- ════════ NAV ════════ -->
+<nav class="nav">
+  <div class="nav-brand">
+    <svg class="nav-mark" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="6" fill="#FF0000"/><path d="M8 6h6v8l-3-2.5L8 14V6z" fill="white"/></svg>
+    YT Bookmarks
+  </div>
+  <div class="nav-links nav-mobile-hide">
+    <a href="#how">How it works</a>
+    <a href="#features">Features</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <a href="#install" class="nav-cta">Add to Chrome</a>
+</nav>
+
+<!-- ════════ HERO ════════ -->
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="eyebrow"><span class="dot"></span>Free · Works on every YouTube video</div>
+    <h1>Stop losing the<br><em>exact moment</em> that mattered.</h1>
+    <p class="hero-sub">YT Bookmarks drops a pin on the timestamp, not just the video. Tag it, note it, file it into a collection — find it again in two seconds flat.</p>
+    <div class="hero-actions">
+      <a href="#install" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 12V21M12 21L8 17M12 21L16 17M5 7H19M7 3H17L19 7L12 12L5 7Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Add to Chrome — it's free
+      </a>
+      <a href="#how" class="btn-secondary">See how it works ↓</a>
+    </div>
+    <div class="hero-meta">
+      <span>★★★★★ Built for people with 400 open tabs</span>
+      <span>No account needed</span>
+      <span>Your data stays on your device</span>
+    </div>
+  </div>
+
+  <!-- SIGNATURE ELEMENT: live scrubber with bookmark pins -->
+  <div class="scrubber-stage wrap">
+    <div class="scrubber-frame">
+      <div class="scrubber-frame-head">
+        <div class="scrubber-title">Now bookmarking — <b>"Building a Synth From Scratch"</b></div>
+        <div class="scrubber-time">14:52 / 38:10</div>
+      </div>
+      <div class="scrubber-track">
+        <div class="scrubber-fill"></div>
+        <div class="scrubber-playhead"></div>
+
+        <div class="pin" style="left:11%" tabindex="0">
+          <div class="pin-dot"></div>
+          <div class="pin-card">
+            <div class="pin-ts">4:02</div>
+            <div class="pin-note">Oscillator circuit explained</div>
+            <span class="pin-tag">electronics</span>
+          </div>
+        </div>
+        <div class="pin" style="left:27%" tabindex="0">
+          <div class="pin-dot"></div>
+          <div class="pin-card">
+            <div class="pin-ts">10:18</div>
+            <div class="pin-note">Filter cutoff — the part I always forget</div>
+            <span class="pin-tag">synths</span>
+          </div>
+        </div>
+        <div class="pin" style="left:38%" tabindex="0">
+          <div class="pin-dot"></div>
+          <div class="pin-card">
+            <div class="pin-ts">14:52</div>
+            <div class="pin-note">Parts list flashes on screen — pause here</div>
+            <span class="pin-tag">shopping-list</span>
+          </div>
+        </div>
+        <div class="pin" style="left:64%" tabindex="0">
+          <div class="pin-dot"></div>
+          <div class="pin-card">
+            <div class="pin-ts">24:30</div>
+            <div class="pin-note">Soldering technique close-up</div>
+            <span class="pin-tag">electronics</span>
+          </div>
+        </div>
+      </div>
+      <div class="scrubber-caption">Hover a pin · this is what every bookmark you save looks like</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ TRUST STRIP ════════ -->
+<section class="trust">
+  <div class="wrap trust-row">
+    <span><b>Manifest V3</b> · current Chrome standard</span>
+    <span><b>Works offline</b> · local storage only</span>
+    <span><b>Zero tracking</b> · no analytics SDK</span>
+    <span><b>~40KB</b> · lighter than a single thumbnail</span>
+  </div>
+</section>
+
+<!-- ════════ FEATURES ════════ -->
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="chapter-label">
+      <span class="chapter-ts">0:00</span>
+      <span class="chapter-name">What it does</span>
+    </div>
+    <div class="section-head">
+      <h2>Everything you wish YouTube's history tab actually did.</h2>
+      <p>History remembers that you watched something. YT Bookmarks remembers why.</p>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🔖</div>
+        <h3>One click, mid-video</h3>
+        <p>A bookmark button sits right in YouTube's own action bar. Click it without pausing, without losing your place.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⏱</div>
+        <h3>Saves the exact timestamp</h3>
+        <p>Not "this video" — this second of this video. Jump straight back to 14:52, every time.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🏷</div>
+        <h3>Tags, not just folders</h3>
+        <p>Channel auto-tagging plus your own custom tags, so one video can live in three contexts at once.</p>
+      </div>
+      <div class="feat-card wide">
+        <div class="feat-icon">🔍</div>
+        <h3>Search across titles, notes, channels, and tags at once</h3>
+        <p>Typed a half-remembered phrase from a note you left three weeks ago? That's enough — the search bar covers everything you've ever written about a video, not just its title.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📁</div>
+        <h3>Colour-coded collections</h3>
+        <p>Group bookmarks the way you actually think — "React Tutorials," "Recipes," "Stuff for the move" — each with its own colour.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ PRODUCT PREVIEW ════════ -->
+<section class="preview">
+  <div class="wrap preview-grid">
+    <div class="popup-mock">
+      <div class="pm-header">
+        <div class="pm-logo">
+          <svg width="18" height="18" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="6" fill="#FF0000"/><path d="M8 6h6v8l-3-2.5L8 14V6z" fill="white"/></svg>
+          YT Bookmarks
+        </div>
+        <div class="pm-badge">12 saved</div>
+      </div>
+      <div class="pm-search">🔍 Search titles, channels, tags, notes…</div>
+      <div class="pm-tabs">
+        <div class="pm-tab active">🔖 Bookmarks</div>
+        <div class="pm-tab">📁 Collections</div>
+        <div class="pm-tab">🕐 Recent</div>
+      </div>
+      <div class="pm-card">
+        <div class="pm-thumb"><span>14:52</span></div>
+        <div class="pm-card-body">
+          <div class="pm-card-title">Building a Synth From Scratch</div>
+          <div class="pm-card-meta">LookMumNoComputer</div>
+          <span class="pm-chip">electronics</span>
+        </div>
+      </div>
+      <div class="pm-card">
+        <div class="pm-thumb"><span>3:10</span></div>
+        <div class="pm-card-body">
+          <div class="pm-card-title">Sourdough timing, finally explained</div>
+          <div class="pm-card-meta">ChefSteps</div>
+          <span class="pm-chip">recipes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-copy">
+      <h2>It looks and feels like part of YouTube — because it lives right next to the rest of your toolbar.</h2>
+      <p>No new tab, no separate app to remember. Open the popup, and every bookmark you've ever saved is sitting there, searchable, sortable, ready.</p>
+      <div class="taglist">
+        <div class="tagrow"><span class="tick">＋</span>Sort by newest, oldest, A–Z, channel, or duration</div>
+        <div class="tagrow"><span class="tick">＋</span>Filter instantly by tag with one tap</div>
+        <div class="tagrow"><span class="tick">＋</span>Export everything to JSON, import it back anywhere</div>
+        <div class="tagrow"><span class="tick">＋</span>A "Recent" tab that quietly tracks what you've watched, in case you forgot to bookmark it</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ HOW IT WORKS ════════ -->
+<section class="steps" id="how">
+  <div class="wrap">
+    <div class="chapter-label">
+      <span class="chapter-ts">2:14</span>
+      <span class="chapter-name">How it works</span>
+    </div>
+    <div class="section-head">
+      <h2>Three steps. None of them interrupt the video.</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-line"></div>
+        <span class="step-num">01</span>
+        <h3>Watch normally</h3>
+        <p>Install the extension once. From then on, every YouTube video you open quietly gets a 🔖 Bookmark button next to Like and Share.</p>
+      </div>
+      <div class="step">
+        <div class="step-line"></div>
+        <span class="step-num">02</span>
+        <h3>Click when it matters</h3>
+        <p>Hit the button the second something's worth remembering. The timestamp, title, and channel save themselves — you don't type a thing.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>Find it in seconds</h3>
+        <p>Open the popup later, search or filter by tag, and click straight back to that exact second — no scrubbing through 40 minutes to find it again.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ QUOTES ════════ -->
+<section class="quote-section">
+  <div class="wrap">
+    <div class="chapter-label">
+      <span class="chapter-ts">5:40</span>
+      <span class="chapter-name">Who's using it</span>
+    </div>
+    <div class="quote-grid">
+      <div class="quote-card">
+        <span class="quote-mark">"</span>
+        <p>I have eleven tabs open right now because I never bookmarked the right second. This fixed that in a day.</p>
+        <div class="quote-who"><div class="quote-avatar"></div>Self-taught developer</div>
+      </div>
+      <div class="quote-card">
+        <span class="quote-mark">"</span>
+        <p>My "watch later" list was a graveyard. Collections actually got me back into videos I'd saved months ago.</p>
+        <div class="quote-who"><div class="quote-avatar"></div>Grad student</div>
+      </div>
+      <div class="quote-card">
+        <span class="quote-mark">"</span>
+        <p>The auto-tag-by-channel thing sounds small until you've got 200 bookmarks and it's the only reason they're sorted.</p>
+        <div class="quote-who"><div class="quote-avatar"></div>Home cook, recipe hoarder</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FAQ ════════ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="chapter-label">
+      <span class="chapter-ts">8:05</span>
+      <span class="chapter-name">Questions</span>
+    </div>
+    <div class="section-head" style="margin-bottom:36px;">
+      <h2>Before you ask in the reviews</h2>
+    </div>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item">
+        <button class="faq-q">Where is my data stored?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Locally, on your own device, using Chrome's storage API. Nothing is sent to a server, and there's no account to create or sign into.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Does it work on every video?<span class="plus">+</span></button>
+        <div class="faq-a"><p>It works on any standard YouTube watch page. The bookmark button is injected into the page itself, so it shows up next to YouTube's own Like and Share buttons.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can I move my bookmarks to a new computer?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Yes — export everything to a single JSON file from Settings, then import that file on the new machine. Nothing is lost in the move.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Does this slow down YouTube?<span class="plus">+</span></button>
+        <div class="faq-a"><p>The extension only activates on watch pages and does one small thing: adds a button and watches for the page to change. There's no background process running while you're not on YouTube.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is it really free?<span class="plus">+</span></button>
+        <div class="faq-a"><p>Yes, fully — no premium tier, no upsell, no ads. It does one job and does it without asking for anything in return.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FINAL CTA ════════ -->
+<section class="cta" id="install">
+  <div class="wrap">
+    <div class="cta-frame">
+      <h2>Your next "wait, where was that part?" ends here.</h2>
+      <p>Add it once. Bookmark forever.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 12V21M12 21L8 17M12 21L16 17M5 7H19M7 3H17L19 7L12 12L5 7Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Add to Chrome — it's free
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-brand">
+      <svg width="16" height="16" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="6" fill="#FF0000"/><path d="M8 6h6v8l-3-2.5L8 14V6z" fill="white"/></svg>
+      YT Bookmarks
+    </div>
+    <div class="foot-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="yt-privacy.html">Privacy Policy</a>
+      <a href="yt-terms.html">Terms</a>
+      <a href="yt-refund.html">Refund Policy</a>
+    </div>
+    <div class="foot-meta">Not affiliated with YouTube or Google. Part of <a href="https://anantaquantaconsulting.com" target="_blank" style="text-decoration:underline;">AnantaQuantaconsulting</a>.</div>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o=>{
+        if(o!==item){ o.classList.remove('open'); o.querySelector('.faq-a').style.maxHeight=null; }
+      });
+      if(isOpen){ item.classList.remove('open'); a.style.maxHeight=null; }
+      else{ item.classList.add('open'); a.style.maxHeight = a.scrollHeight+'px'; }
+    });
+  });
+
+  // Smooth-scroll nav anchors
+  document.querySelectorAll('a[href^="#"]').forEach(link=>{
+    link.addEventListener('click', e=>{
+      const id = link.getAttribute('href');
+      if(id.length>1){
+        const target = document.querySelector(id);
+        if(target){ e.preventDefault(); target.scrollIntoView({behavior:'smooth', block:'start'}); }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
